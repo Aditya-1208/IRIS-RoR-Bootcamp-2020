@@ -1,28 +1,30 @@
 class Ability
   include CanCan::Ability
 
-  def initialize(user)
+  def initialize(user,session)
     # All users
     can :index, Article
 
     # Can read public articles
     can :show, Article, public: true
 
+    can [:new,:create], User
+
     # Additional permissions for logged in users
     if user.present?
       # Can read private articles
-      can :show, Article, public: false
+      can :show, Article, public: false if session[:private_articles_remaining]
 
       # Can create articles
-      can :new, Article
-      can :create, Article
+      can [:new,:create], Article
+      # can manipulate their own articles
+      can [:edit,:update,:destroy], Article, user_id: user.id
 
-      # Can edit their own articles
-      can :edit, Article, user_id: user.id
-      can :update, Article, user_id: user.id
+      can [:show,:edit,:update,:destroy], User, id:user.id
 
-      # Can destroy their own articles
-      can :destroy, Article, user_id: user.id
+      return unless user.admin?
+      can :manage, :all
+
     end
     # Define abilities for the passed in user here. For example:
     #

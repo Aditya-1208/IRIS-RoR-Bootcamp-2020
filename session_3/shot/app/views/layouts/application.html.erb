@@ -12,7 +12,7 @@
 
   <body>
   <% if current_user %>
-    Logged in as <%= current_user.email %>
+    Logged in as <%= current_user.email %>, You have <%= session[:private_articles_remaining] %> private articles remaining!
     <%= link_to 'Log Out', logout_path,  method: :delete %>
   <% else %>
     <%= link_to 'Sign Up', signup_path %>

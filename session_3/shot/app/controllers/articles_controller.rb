@@ -9,6 +9,7 @@ class ArticlesController < ApplicationController
 
   # GET /articles/1 or /articles/1.json
   def show
+    session[:private_articles_remaining]-=1 if (!@article.public && @article.user_id!=current_user.id)
   end
 
   # GET /articles/new
